@@ -26,6 +26,8 @@ export default {
   methods: {
     itemclick(index) {
       this.currentIndex = index;
+      //向父组件发射事件传输数据
+      this.$emit("tabClick", index);
     },
   },
   data() {
@@ -36,12 +38,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .tab-control {
   display: flex;
   height: 40px;
   line-height: 40px;
   text-align: center;
+  background-color: #fff;
 }
 .tab-control-item {
   flex: 1;
