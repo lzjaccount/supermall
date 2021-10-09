@@ -1,20 +1,30 @@
 <template>
   <div id="home">
     <nav-bar id="nav-home"><div slot="center">购物街</div></nav-bar>
+    <!-- 用于实现tab-control上吸 -->
+    <tab-control
+      :titles="['流行', '新款', '精选']"
+      class="tab-control2"
+      @tabClick="tabClick"
+      ref="tabControl2"
+      v-show="isfixed"
+    />
     <scroll
       class="content"
       ref="scroll"
       :probe-type="3"
       @scroll="scroll"
       :pull-upload="true"
+      @pullingUp="loadmore"
     >
-      <home-swiper :banner="banner" />
+      <home-swiper :banner="banner" @swiperImgLoad="swiperImgLoad" />
       <recommend-view :recommend="recommend" />
       <feature-view />
       <tab-control
         :titles="['流行', '新款', '精选']"
         class="tab-control"
         @tabClick="tabClick"
+        ref="tabControl1"
       />
       <goods-list :goods-list="goods[currentIndex].list" />
     </scroll>
@@ -62,6 +72,8 @@ export default {
       },
       currentIndex: "pop",
       isShow: true,
+      tabControlOffsetTop: 0,
+      isfixed: false,
     };
   },
   created() {
@@ -71,10 +83,6 @@ export default {
     this.getHomeGoods("sell");
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
-    //监听图片加载决解better-scroll滚动问题
-    this.$bus.$on("imgLoad", () => {
-      this.$refs.scroll.scroll.refresh();
-    });
   },
   methods: {
     //事件监听相关事件
@@ -90,13 +98,26 @@ export default {
           this.currentIndex = "sell";
           break;
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     backclick() {
       //返回顶部
       this.$refs.scroll.scrollTo(0, 0);
     },
     scroll(position) {
+      //判断返回顶部是否显示
       this.isShow = position.y < -1000;
+      this.isfixed = position.y < -this.tabControlOffsetTop;
+    },
+    loadmore() {
+      this.getHomeGoods(this.currentIndex);
+    },
+    swiperImgLoad() {
+      //不能直接获取tabControl的offsetTop，因为图片没加载成功会影响offsetTop
+      //一旦轮播图加载完，获取tabControl的offsetTop，因为轮播图是影响最大的因素
+      //$el用于获取组件中的dom元素
+      this.tabControlOffsetTop = this.$refs.tabControl1.$el.offsetTop;
     },
     //网络请求相关事件
     getMultiData() {
@@ -114,11 +135,22 @@ export default {
         //console.log(res);
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+        //结束上拉加载更多，这样才能进行下一次下拉加载
+        this.$refs.scroll && this.$refs.scroll.finishPull();
       });
-      //结束上拉加载更多，这样才能进行下一次下拉加载
     },
   },
-  mounted() {},
+  mounted() {
+    let timer = null;
+    //监听图片加载决解better-scroll滚动问题
+    this.$bus.$on("imgLoad", () => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        this.$refs.scroll.scroll.refresh();
+        // console.log(11);
+      }, 100);
+    });
+  },
 };
 </script>
 
@@ -139,17 +171,17 @@ export default {
   color: #fff;
   font-size: 18px;
 }
-.tab-control {
-  position: sticky;
-  top: 44px;
-}
 
 .content {
   overflow: hidden;
   position: absolute;
-  top: 44px;
+  top: 45px;
   bottom: 49px;
   left: 0;
   right: 0;
+}
+.tab-control2 {
+  position: relative;
+  z-index: 9;
 }
 </style>

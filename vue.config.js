@@ -8,6 +8,12 @@ module.exports = {
                 'network': '@/network',
                 'views': '@/views',
             }
-        }
+        },
+
+    },
+    devServer: {
+        host: '10.193.45.51',
+        port: 8080,
     }
+
 }

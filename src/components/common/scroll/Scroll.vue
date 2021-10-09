@@ -47,10 +47,11 @@ export default {
   methods: {
     scrollTo(x, y, time = 300) {
       //time设置默认300毫秒
-      this.scroll.scrollTo(x, y, time);
+      this.scroll && this.scroll.scrollTo(x, y, time);
     },
+    //Scroll默认只能上拉加载一次，所以要执行finishPullUp()这个方法才能进入下一次
     finishPull() {
-      this.scroll.finishPullUp();
+      this.scroll && this.scroll.finishPullUp();
     },
   },
 };
