@@ -12,7 +12,7 @@ module.exports = {
 
     },
     devServer: {
-        host: '10.193.45.51',
+        host: 'localhost',
         port: 8080,
     }
 

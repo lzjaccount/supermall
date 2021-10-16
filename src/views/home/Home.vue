@@ -71,7 +71,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentIndex: "pop",
-      isShow: true,
+      isShow: false,
       tabControlOffsetTop: 0,
       isfixed: false,
     };
@@ -141,9 +141,10 @@ export default {
     },
   },
   mounted() {
+    //防抖动
     let timer = null;
     //监听图片加载决解better-scroll滚动问题
-    this.$bus.$on("imgLoad", () => {
+    this.$bus.$on("homeimgLoad", () => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         this.$refs.scroll.scroll.refresh();
@@ -175,7 +176,7 @@ export default {
 .content {
   overflow: hidden;
   position: absolute;
-  top: 45px;
+  top: 44px;
   bottom: 49px;
   left: 0;
   right: 0;

@@ -34,6 +34,7 @@ export default {
       probeType: this.probeType,
       click: true,
       pullUpLoad: true,
+      // observeImage: true,
     });
     //监听滚动
     this.scroll.on("scroll", (position) => {

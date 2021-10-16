@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
+    <keep-alive exclude="Detai">
       <router-view></router-view>
     </keep-alive>
     <main-tabbar></main-tabbar>

@@ -1,7 +1,7 @@
 <template>
-  <div class="goods-item">
-    <a :href="goodsItem.link">
-      <img :src="goodsItem.show.img" alt="" @load="imgLoad" />
+  <div class="goods-item" @click="itemClick">
+    <a href="javascript:;">
+      <img v-lazy="showImg" alt="" @load="imgLoad" />
       <p class="title">{{ goodsItem.title }}</p>
       <div>
         <span class="price">{{ goodsItem.price }}</span>
@@ -22,12 +22,24 @@ export default {
       },
     },
   },
+  computed: {
+    showImg() {
+      return this.goodsItem.image || this.goodsItem.show.img;
+    },
+  },
   methods: {
     //监听图片加载决解better-scroll滚动问题
     imgLoad() {
       // console.log(this.$bus);
       //通过事件总线发送
-      this.$bus.$emit("imgLoad");
+      if (this.$route.path.indexOf("/home") !== -1) {
+        this.$bus.$emit("homeimgLoad");
+      } else if (this.$route.path.indexOf("/detai") !== -1) {
+        this.$bus.$emit("detaiimgLoad");
+      }
+    },
+    itemClick() {
+      this.$router.push("/detai/" + this.goodsItem.iid);
     },
   },
 };

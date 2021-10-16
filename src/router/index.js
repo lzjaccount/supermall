@@ -5,6 +5,7 @@ const Home = () => import('../views/home/Home')
 const Cart = () => import('../views/cart/Cart')
 const Profile = () => import('../views/profile/Profile')
 const Category = () => import('../views/category/Category')
+const Detai = () => import('../views/detai/Detai')
 Vue.use(Router)
 const routes = [
     {
@@ -22,6 +23,9 @@ const routes = [
     }, {
         path: '/category',
         component: Category
+    }, {
+        path: '/detai/:iid',
+        component: Detai
     }
 ]
 export default new Router({
